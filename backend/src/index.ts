@@ -4,9 +4,9 @@ import cors from "cors";
 import session from "cookie-session";
 import { config } from "./config/app.config";
 import connectDatabase from "./config/datbase.config";
-import { errorHandler } from "./middleware/errorHandler.middleware";
+import { errorHandler } from "./middlewares/errorHandler.middleware";
 import { HTTPSTATUS } from "./config/http.config";
-import { asyncHandler } from "./middleware/asyncHandler.middleware";
+import { asyncHandler } from "./middlewares/asyncHandler.middleware";
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
