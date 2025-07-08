@@ -11,6 +11,7 @@ import {
   CreateTaskPayloadType,
   CreateWorkspaceResponseType,
   EditProjectPayloadType,
+  EditTaskPayloadType,
   ProjectByIdPayloadType,
   ProjectResponseType,
 } from "../types/api.type";
@@ -205,18 +206,18 @@ export const createTaskMutationFn = async ({
 };
 
 
-// export const editTaskMutationFn = async ({
-//   taskId,
-//   projectId,
-//   workspaceId,
-//   data,
-// }: EditTaskPayloadType): Promise<{message: string;}> => {
-//   const response = await API.put(
-//     `/task/${taskId}/project/${projectId}/workspace/${workspaceId}/update/`,
-//     data
-//   );
-//   return response.data;
-// };
+export const editTaskMutationFn = async ({
+  taskId,
+  projectId,
+  workspaceId,
+  data,
+}: EditTaskPayloadType): Promise<{message: string;}> => {
+  const response = await API.put(
+    `/task/${taskId}/project/${projectId}/workspace/${workspaceId}/update/`,
+    data
+  );
+  return response.data;
+};
 
 export const getAllTasksQueryFn = async ({
   workspaceId,
