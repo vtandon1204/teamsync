@@ -26,7 +26,7 @@ const RecentMembers = () => {
           const name = member?.userId?.name || "";
           const initials = getAvatarFallbackText(name);
           const avatarColor = getAvatarColor(name);
-          return (
+            return (
             <li
               key={index}
               role="listitem"
