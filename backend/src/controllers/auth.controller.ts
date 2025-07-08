@@ -2,29 +2,22 @@ import { NextFunction, Request, Response } from "express";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { config } from "../config/app.config";
 import { registerSchema } from "../validation/auth.validation";
-import { registerUserService } from "../services/auth.service";
 import { HTTPSTATUS } from "../config/http.config";
+import { registerUserService } from "../services/auth.service";
 import passport from "passport";
-import { signJwtToken } from "../utils/jwt";
-
 
 export const googleLoginCallback = asyncHandler(
   async (req: Request, res: Response) => {
-    const jwt = req.jwt
     const currentWorkspace = req.user?.currentWorkspace;
 
-    if (!jwt) {
+    if (!currentWorkspace) {
       return res.redirect(
         `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`
       );
     }
 
-    // return res.redirect(
-    //   `${config.FRONTEND_ORIGIN}/workspace/${currentWorkspace}`
-    // );
-
     return res.redirect(
-        `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=success&access_token=${jwt}&current_workspace=${currentWorkspace}`
+      `${config.FRONTEND_ORIGIN}/workspace/${currentWorkspace}`
     );
   }
 );
@@ -62,23 +55,15 @@ export const loginController = asyncHandler(
           });
         }
 
-        // req.logIn(user, (err) => {
-        //   if (err) {
-        //     return next(err);
-        //   }
+        req.logIn(user, (err) => {
+          if (err) {
+            return next(err);
+          }
 
-        //   return res.status(HTTPSTATUS.OK).json({
-        //     message: "Logged in successfully",
-        //     user,
-        //   });
-        // });
-
-        const access_token=signJwtToken({ userId: user._id });
-
-        return res.status(HTTPSTATUS.OK).json({
-          message: "Logged in successfully",
-          access_token,
-          user,
+          return res.status(HTTPSTATUS.OK).json({
+            message: "Logged in successfully",
+            user,
+          });
         });
       }
     )(req, res, next);
@@ -94,17 +79,19 @@ export const logOutController = asyncHandler(
           .status(HTTPSTATUS.INTERNAL_SERVER_ERROR)
           .json({ error: "Failed to log out" });
       }
-    });
 
-    if (req.session) {
       req.session.destroy((err) => {
         if (err) {
-          console.error("Session destroy error:", err);
+          console.error("Session destruction error:", err);
+          return res
+            .status(HTTPSTATUS.INTERNAL_SERVER_ERROR)
+            .json({ error: "Failed to destroy session" });
         }
+
+        return res
+          .status(HTTPSTATUS.OK)
+          .json({ message: "Logged out successfully" });
       });
-    }
-    return res
-      .status(HTTPSTATUS.OK)
-      .json({ message: "Logged out successfully" });
+    });
   }
 );
