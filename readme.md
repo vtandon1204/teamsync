@@ -35,7 +35,6 @@ TeamSync is a full-stack team and project management platform that helps users c
 | Database   | MongoDB                              |
 | ORM        | Mongoose                             |
 | Validation | Zod                                  |
-| Deployment | Vercel (Frontend), Render (Backend)  |
 
 ## Getting Started
 
